@@ -6,7 +6,30 @@
   height: 40vmin;
   pointer-events: none;
 }
-
+.dice1 {
+  height: 40vmin;
+  pointer-events: none;
+}
+.dice2 {
+  height: 40vmin;
+  pointer-events: none;
+}
+.dice3 {
+  height: 40vmin;
+  pointer-events: none;
+}
+.dice4 {
+  height: 40vmin;
+  pointer-events: none;
+}
+.dice5 {
+  height: 40vmin;
+  pointer-events: none;
+}
+.dice6 {
+  height: 40vmin;
+  pointer-events: none;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -14,7 +37,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #145223;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
