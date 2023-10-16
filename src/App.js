@@ -4,23 +4,37 @@ import Controls from './Controls';
 import './App.css';
 import Dice from './Dice';
 import '@fontsource/inter';
+import Navbar from './Navbar';
+import Gameboard from './Gameboard';
 
 
 function App() {
   const [dices, setDices] = useState([1, 1, 1, 1, 1]);
   const [held, setHeld] = useState([false, false, false, false, false]);
   const [scores, setScores] = useState({
-    Ones: null,
-    Twos: null,
-    Threes: null,
-    Fours: null,
-    Fives: null,
-    Sixes: null,
-    ThreeOfAKind: null,
-    FourOfAKind: null,
-    FullHouse: null,
-    SmallStraight: null,
-    LargeStraight: null
+    upper: {
+      Ones: null,
+      Twos: null,
+      Threes: null,
+      Fours: null,
+      Fives: null,
+      Sixes: null,
+      Total: null,
+      Bonus: null
+    },
+    lower: {
+      ThreeOfAKind: null,
+      FourOfAKind: null,
+      FullHouse: null,
+      SmallStraight: null,
+      LargeStraight: null,
+      Yahtzee: null,
+      Chance: null,
+      YahtzeeBonus: null,
+      TotalLower: null,
+      TotalUpper: null,
+      GrandTotal: null
+    }
   });
   const toggleHold = (idx) => {
     const newHeld = [...held];
@@ -75,17 +89,19 @@ function App() {
 
   return (
     <div className="App">
-      <center>
-        <h1>Yatzy</h1>
-        <Scoreboard scores={scores} />
-        {dices.map((diceValue, idx) => (
-        <Dice key={idx} value={diceValue} onClick={() => toggleHold(idx)} held={held[idx]} />
-        ))}
-        <Controls onRoll={rollDice} />
-        </center>
+        <Navbar />
+        <div className="main-content">
+            <Scoreboard scores={scores} />
+            <Gameboard 
+                dices={dices} 
+                held={held} 
+                onToggleHold={toggleHold} 
+                onRollDice={rollDice} 
+            />
         </div>
-        );
-      }
+    </div>
+    );
+  }
     
   
 
