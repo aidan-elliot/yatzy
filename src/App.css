@@ -6,6 +6,19 @@
   height: 40vmin;
   pointer-events: none;
 }
+.dice {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.dice:hover {
+  transform: scale(1.1);
+}
+
+.dice.held {
+  border: 2px solid red;
+  transform: scale(1.1);
+}
 .dice1 {
   height: 40vmin;
   pointer-events: none;

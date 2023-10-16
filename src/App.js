@@ -1,39 +1,92 @@
-import dice1 from './Assets/dice-six-faces-one.svg';
-import dice2 from './Assets/dice-six-faces-two.svg';
-import dice3 from './Assets/dice-six-faces-three.svg';
-import dice4 from './Assets/dice-six-faces-four.svg';
-import dice5 from './Assets/dice-six-faces-five.svg';
-import dice6 from './Assets/dice-six-faces-six.svg';
+import React, { useState } from 'react';
+import Scoreboard from './Scoreboard';
+import Controls from './Controls';
 import './App.css';
+import Dice from './Dice';
 import '@fontsource/inter';
 
 
 function App() {
+  const [dices, setDices] = useState([1, 1, 1, 1, 1]);
+  const [held, setHeld] = useState([false, false, false, false, false]);
+  const [scores, setScores] = useState({
+    Ones: null,
+    Twos: null,
+    Threes: null,
+    Fours: null,
+    Fives: null,
+    Sixes: null,
+    ThreeOfAKind: null,
+    FourOfAKind: null,
+    FullHouse: null,
+    SmallStraight: null,
+    LargeStraight: null
+  });
+  const toggleHold = (idx) => {
+    const newHeld = [...held];
+    newHeld[idx] = !newHeld[idx];
+    setHeld(newHeld);
+  };
+
+  const rollDice = () => {
+    const newDices = dices.map((dice, idx) => 
+      held[idx] ? dice : 1 + Math.floor(Math.random() * 6)
+    );
+    setDices(newDices);
+  };
+  const calculateScores = (dices) => {
+    const diceCounts = Array(6).fill(0);
+    dices.forEach(dice => {
+      diceCounts[dice - 1]++;
+    });
+  
+    const sumDices = dices.reduce((acc, curr) => acc + curr, 0);
+
+    const isSmallStraight = (diceCounts) => {
+      return (
+        (diceCounts[0] && diceCounts[1] && diceCounts[2] && diceCounts[3]) ||
+        (diceCounts[1] && diceCounts[2] && diceCounts[3] && diceCounts[4]) ||
+        (diceCounts[2] && diceCounts[3] && diceCounts[4] && diceCounts[5])
+      );
+    };
+  
+    const isLargeStraight = (diceCounts) => {
+      return (
+        (diceCounts[0] && diceCounts[1] && diceCounts[2] && diceCounts[3] && diceCounts[4]) ||
+        (diceCounts[1] && diceCounts[2] && diceCounts[3] && diceCounts[4] && diceCounts[5])
+      );
+    };
+    
+    return {
+      Ones: diceCounts[0] * 1,
+      Twos: diceCounts[1] * 2,
+      Threes: diceCounts[2] * 3,
+      Fours: diceCounts[3] * 4,
+      Fives: diceCounts[4] * 5,
+      Sixes: diceCounts[5] * 6,
+      ThreeOfAKind: diceCounts.some(count => count >= 3) ? sumDices : 0,
+      FourOfAKind: diceCounts.some(count => count >= 4) ? sumDices : 0,
+      FullHouse: diceCounts.includes(2) && diceCounts.includes(3) ? 25 : 0,
+      SmallStraight: isSmallStraight(diceCounts) ? 30 : 0,
+      LargeStraight: isLargeStraight(diceCounts) ? 40 : 0
+      // Continue for other scores...
+    };
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <div>
-        <img src={dice1} className="dice1" alt="die1" />
-        <img src={dice2} className="dice2" alt="diee2" />
-        <img src={dice3} className="dice3" alt="die3" />
-        <img src={dice4} className="dice4" alt="die4" />
-        <img src={dice5} className="dice5" alt="die5" />
-        <img src={dice6} className="dice6" alt="die6" />
+      <center>
+        <h1>Yatzy</h1>
+        <Scoreboard scores={scores} />
+        {dices.map((diceValue, idx) => (
+        <Dice key={idx} value={diceValue} onClick={() => toggleHold(idx)} held={held[idx]} />
+        ))}
+        <Controls onRoll={rollDice} />
+        </center>
         </div>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!
-        </a>
-      </header>
-    </div>
-  );
-}
+        );
+      }
+    
+  
 
 export default App;
