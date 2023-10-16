@@ -39,26 +39,26 @@ function Gameboard({ dices, held, onToggleHold, onRollDice }) {
     
 
     return (
-    <div className="gameboard" style={{ backgroundImage: `url(${boardBackground})` }}>
-        <div className="dice-container">
+        <div className="gameboard" style={{ backgroundImage: `url(${boardBackground})` }}>
+            <div className="dice-container">
                 {dices.map((diceValue, idx) => {
                     const position = getSectionForDice();
-                    // If you want the dice to be placed randomly within that section, adjust the x and y values a bit.
-                    position.x += Math.floor(Math.random() * 10);  // Adjust the value "10" based on your design.
-                    position.y += Math.floor(Math.random() * 25);  // Adjust this value too, ensuring dice stay within section bounds.                    
+                    position.x += Math.floor(Math.random() * 0) - 5;
+                    position.y += Math.floor(Math.random() * -30) - 5;
                     const rotation = getRandomRotation();
-                    
+    
                     return (
-                    <div
-                    key={idx}
-                    className={`dice dice${diceValue} ${held[idx] ? 'held' : ''}`}
-                    onClick={() => onToggleHold(idx)}
-                    style={{
-                        transform: `translate(${position.x}%, ${position.y}%) rotate(${rotation}deg)`
-                    }}
-                    >
-                        <img src={diceImages[diceValue - 1]} alt={`Dice showing ${diceValue}`} />
-                    </div>
+                        <div
+                            key={idx}
+                            className={`dice dice${diceValue} ${held[idx] ? 'held' : ''}`}
+                            onClick={() => onToggleHold(idx)}
+                            style={{
+                                transform: `translate(${position.x}%, ${position.y}%) rotate(${rotation}deg)`,
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <img src={diceImages[diceValue - 1]} alt={`Dice showing ${diceValue}`} />
+                        </div>
                     );
                 })}
             </div>
@@ -66,7 +66,8 @@ function Gameboard({ dices, held, onToggleHold, onRollDice }) {
                 Roll Dice
             </button>
         </div>
-    );    
+    );
+       
 }
 
 export default Gameboard;

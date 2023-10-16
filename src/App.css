@@ -101,6 +101,7 @@
   justify-content: center;
   height: 100vh;
   width: 100vw;
+  padding: 20px;
   
   /* Background Styles */
   background-color: #f5f5f5; /* Optional: Color fallback for browsers that don't support the image */
@@ -112,19 +113,20 @@
   overflow: auto;
 }
 
-
-
 .dice-container {
   display: flex;
-  gap: 10px; /* Space between dice */
+  gap: 10px;
+  max-width: 60%;
   margin-bottom: 15pt;
   height: 65%;
 }
+.dice {
+  transition: transform 0.2s ease;
+}
+.dice img {
+  width: 100pt;
+  height: auto;
 
-.dice img{
-  width: 145pt; /* Adjust as per your preference */
-  height: 145pt;
-  transition: transform 2s ease-out;
 }
 
 .dice:hover {
@@ -132,8 +134,9 @@
 }
 
 .dice.held {
-    border: 2px solid red;
-    transform: scale(1.1);
+  opacity: 0.6;
+  transform: scale(1.1);
+  box-sizing: border-box; /* Ensures border width is included in element's total width and height */
 }
 
 .roll-button {
@@ -157,73 +160,42 @@
   padding: 20px;
 }
 
-.dice-container {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.dice {
-  width: 50px;  /* Adjust as needed */
-  height: 50px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.dice:hover {
-  transform: scale(1.1);
-}
-
-.dice.held {
-  border: 2px solid red;
-  transform: scale(1.1);
-}
 
 .roll-button {
+  align-self: start;
   padding: 10px 20px;
-  background-color: #282A2D;
+  border: 2px solid #007e39;  /* Adjusted this line */
   color: white;
-  border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .roll-button:hover {
-  background-color: #3a3a3d;
+  background-color: #007e39;
 }
 
-.dice:hover {
-  transform: scale(1.1);
-}
-
-.dice.held {
-  border: 2px solid red;
-  transform: scale(1.1);
-}
 .dice1 {
   height: 40vmin;
-  pointer-events: none;
+
 }
 .dice2 {
   height: 40vmin;
-  pointer-events: none;
+
 }
 .dice3 {
   height: 40vmin;
-  pointer-events: none;
+
 }
 .dice4 {
   height: 40vmin;
-  pointer-events: none;
+
 }
 .dice5 {
   height: 40vmin;
-  pointer-events: none;
 }
 .dice6 {
   height: 40vmin;
-  pointer-events: none;
 }
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

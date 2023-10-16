@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Scoreboard from './Scoreboard';
-import Controls from './Controls';
 import './App.css';
-import Dice from './Dice';
 import '@fontsource/inter';
 import Navbar from './Navbar';
 import Gameboard from './Gameboard';
@@ -47,7 +45,20 @@ function App() {
       held[idx] ? dice : 1 + Math.floor(Math.random() * 6)
     );
     setDices(newDices);
-  };
+  
+    const { upperScores, lowerScores } = calculateScores(newDices);
+    setScores(prevScores => ({
+      ...prevScores,
+      upper: {
+        ...prevScores.upper,
+        ...upperScores
+      },
+      lower: {
+        ...prevScores.lower,
+        ...lowerScores
+      }
+    }));
+};
   const calculateScores = (dices) => {
     const diceCounts = Array(6).fill(0);
     dices.forEach(dice => {
@@ -70,22 +81,28 @@ function App() {
         (diceCounts[1] && diceCounts[2] && diceCounts[3] && diceCounts[4] && diceCounts[5])
       );
     };
-    
-    return {
+    const upperScores = {
       Ones: diceCounts[0] * 1,
       Twos: diceCounts[1] * 2,
       Threes: diceCounts[2] * 3,
       Fours: diceCounts[3] * 4,
       Fives: diceCounts[4] * 5,
       Sixes: diceCounts[5] * 6,
+    };
+
+    const lowerScores = {
       ThreeOfAKind: diceCounts.some(count => count >= 3) ? sumDices : 0,
       FourOfAKind: diceCounts.some(count => count >= 4) ? sumDices : 0,
       FullHouse: diceCounts.includes(2) && diceCounts.includes(3) ? 25 : 0,
       SmallStraight: isSmallStraight(diceCounts) ? 30 : 0,
-      LargeStraight: isLargeStraight(diceCounts) ? 40 : 0
+      LargeStraight: isLargeStraight(diceCounts) ? 40 : 0,
+      // Continue for other lower section scores...
+    };
+
+    return { upperScores, lowerScores };
+
       // Continue for other scores...
     };
-  };
 
   return (
     <div className="App">
@@ -102,6 +119,7 @@ function App() {
     </div>
     );
   }
+
     
   
 
