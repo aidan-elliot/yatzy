@@ -109,13 +109,11 @@
   background-size: 85%;
   background-repeat: no-repeat;
   background-position: center;
-  
   overflow: auto;
 }
 
 .dice-container {
   display: flex;
-  gap: 10px;
   max-width: 60%;
   margin-bottom: 15pt;
   height: 65%;
@@ -125,8 +123,7 @@
 }
 .dice img {
   width: 100pt;
-  height: auto;
-
+  height: 100pt;
 }
 
 .dice:hover {
@@ -135,8 +132,8 @@
 
 .dice.held {
   opacity: 0.6;
-  transform: scale(1.1);
-  box-sizing: border-box; /* Ensures border width is included in element's total width and height */
+  transform: scale(1.1); /* Ensures border width is included in element's total width and height */
+  border: 2px solid red;
 }
 
 .roll-button {
