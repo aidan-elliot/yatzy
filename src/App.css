@@ -104,7 +104,7 @@
   padding: 20px;
   
   /* Background Styles */
-  background-color: #f5f5f5; /* Optional: Color fallback for browsers that don't support the image */
+  background-color: #131415; /* Optional: Color fallback for browsers that don't support the image */
   background-image: url('./Assets/Background logo high res black.png'); /* It's sometimes more direct to specify in CSS, but if you prefer it in the JS, this can be omitted */
   background-size: 85%;
   background-repeat: no-repeat;
@@ -113,7 +113,7 @@
 }
 
 .dice-container {
-  display: flex;
+  justify-content: start;
   max-width: 60%;
   margin-bottom: 15pt;
   height: 65%;
@@ -123,7 +123,6 @@
 }
 .dice img {
   width: 100pt;
-  height: 100pt;
 }
 
 .dice:hover {
@@ -149,13 +148,7 @@
 .roll-button:hover {
   background-color: #555;
 }
-.gameboard {
-  background-color: #131415;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-}
+
 
 
 .roll-button {
@@ -172,28 +165,7 @@
   background-color: #007e39;
 }
 
-.dice1 {
-  height: 40vmin;
 
-}
-.dice2 {
-  height: 40vmin;
-
-}
-.dice3 {
-  height: 40vmin;
-
-}
-.dice4 {
-  height: 40vmin;
-
-}
-.dice5 {
-  height: 40vmin;
-}
-.dice6 {
-  height: 40vmin;
-}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
