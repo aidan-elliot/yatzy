@@ -125,8 +125,6 @@
 }
 .dice img {
   width: 100pt;
-  height: auto;
-
 }
 
 .dice:hover {
@@ -136,7 +134,8 @@
 .dice.held {
   opacity: 0.6;
   transform: scale(1.1);
-  box-sizing: border-box; /* Ensures border width is included in element's total width and height */
+  box-sizing: border-box; 
+  border: 2px solid red;
 }
 
 .roll-button {
@@ -176,26 +175,25 @@
 }
 
 .dice1 {
-  height: 40vmin;
 
 }
 .dice2 {
-  height: 40vmin;
+
 
 }
 .dice3 {
-  height: 40vmin;
+
 
 }
 .dice4 {
-  height: 40vmin;
+
 
 }
 .dice5 {
-  height: 40vmin;
+
 }
 .dice6 {
-  height: 40vmin;
+
 }
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
