@@ -12,12 +12,12 @@ function Gameboard({ dices, held, onToggleHold, onRollDice }) {
     const diceImages = [dice1, dice2, dice3, dice4, dice5, dice6];
 
     const getRandomRotation = () => {
-        return Math.floor(Math.random() * 360); // Rotation between 0 to 360 degrees
+        return Math.floor(Math.random() * 360);
     };
     const grid = [
         { x: 0, y: 0 }, { x: 33.33, y: 0 }, { x: 66.66, y: 0 }, 
         { x: 0, y: 50 }, { x: 33.33, y: 50 }, { x: 66.66, y: 50 }
-    ];  // A 3x2 grid, expressed in percentages
+    ];
     
     let occupiedSections = [];
     

@@ -96,12 +96,10 @@ function App() {
       FullHouse: diceCounts.includes(2) && diceCounts.includes(3) ? 25 : 0,
       SmallStraight: isSmallStraight(diceCounts) ? 30 : 0,
       LargeStraight: isLargeStraight(diceCounts) ? 40 : 0,
-      // Continue for other lower section scores...
     };
 
     return { upperScores, lowerScores };
 
-      // Continue for other scores...
     };
 
   return (
