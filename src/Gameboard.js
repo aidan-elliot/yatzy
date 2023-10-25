@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import dice1 from './Assets/dice-six-faces-one.svg';
-import dice2 from './Assets/dice-six-faces-two.svg';
-import dice3 from './Assets/dice-six-faces-three.svg';
-import dice4 from './Assets/dice-six-faces-four.svg';
-import dice5 from './Assets/dice-six-faces-five.svg';
-import dice6 from './Assets/dice-six-faces-six.svg';
+import dice1 from './Assets/dice-six-faces-one.png';
+import dice2 from './Assets/dice-six-faces-two.png';
+import dice3 from './Assets/dice-six-faces-three.png';
+import dice4 from './Assets/dice-six-faces-four.png';
+import dice5 from './Assets/dice-six-faces-five.png';
+import dice6 from './Assets/dice-six-faces-six.png';
 import boardBackground from './Assets/Background logo high res black.png';
 
 

@@ -1,23 +1,23 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* Optional, but recommended. This changes how element widths are calculated to include padding and borders */
+  box-sizing: border-box;
 }
 
 .App {
   margin: 0;
   padding: 0;
   height: 100vh;
-  overflow: hidden; /* This ensures no unnecessary scrollbars appear */
-  background: #131415; /* Replace with your dark theme color */
-  color: #fff; /* Any text color that contrasts well with your dark theme */
+  overflow: hidden;
+  background: #131415;
+  color: #fff;
 }
 .main-content {
   display: flex;
-  flex-direction: row; /* This is default and can be omitted, but added for clarity */
-  align-items: start; /* Aligns children (Scoreboard and Gameboard) to the start/top */
+  flex-direction: row;
+  align-items: start;
   width: 100%;
-  flex-grow: 1; /* Allows it to take up remaining space */
+  flex-grow: 1;
 }
 .navbar {
   position: fixed; 
@@ -94,6 +94,10 @@
 .score-value {
   text-align: right;
 }
+.scoreboard{
+  margin-top: 1%;
+}
+
 .gameboard {
   display: flex;
   flex-direction: column;
@@ -103,9 +107,9 @@
   width: 100vw;
   padding: 20px;
   
-  /* Background Styles */
-  background-color: #131415; /* Optional: Color fallback for browsers that don't support the image */
-  background-image: url('./Assets/Background logo high res black.png'); /* It's sometimes more direct to specify in CSS, but if you prefer it in the JS, this can be omitted */
+
+  background-color: #131415;
+  background-image: url('./Assets/Background logo high res black.png');
   background-size: 85%;
   background-repeat: no-repeat;
   background-position: center;
@@ -133,7 +137,7 @@
   opacity: 0.6;
   transform: scale(1.1);
   box-sizing: border-box; 
-  transform: scale(1.1); /* Ensures border width is included in element's total width and height */
+  transform: scale(1.1);
   border: 2px solid red;
 }
 
@@ -156,7 +160,7 @@
 .roll-button {
   align-self: start;
   padding: 10px 20px;
-  border: 2px solid #007e39;  /* Adjusted this line */
+  border: 2px solid #007e39;
   color: white;
   border-radius: 5px;
   cursor: pointer;
