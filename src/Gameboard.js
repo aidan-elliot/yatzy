@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import dice1 from './Assets/dice-six-faces-one.png';
 import dice2 from './Assets/dice-six-faces-two.png';
 import dice3 from './Assets/dice-six-faces-three.png';
@@ -7,72 +7,78 @@ import dice5 from './Assets/dice-six-faces-five.png';
 import dice6 from './Assets/dice-six-faces-six.png';
 import boardBackground from './Assets/Background logo high res black.png';
 
-function Gameboard({ dices, held, onToggleHold, onRollDice }) {
-  // Array to store the images of each dice face
-  const diceImages = [dice1, dice2, dice3, dice4, dice5, dice6];
-
-  // Function to generate a random rotation angle for the dice
-  const getRandomRotation = () => {
-    return Math.floor(Math.random() * 360);
-  };
-
-  // Array to define potential positions of dice on the game board
-  const grid = [
-    { x: 0, y: 0 }, { x: 33.33, y: 0 }, { x: 66.66, y: 0 }, 
-    { x: 0, y: 50 }, { x: 33.33, y: 50 }, { x: 66.66, y: 50 }
-  ];
-  
-  // Array to track which sections of the grid are currently occupied by dice
-  let occupiedSections = [];
-  
-  // Function to assign a unique section of the grid to a dice
-  const getSectionForDice = () => {
-    let section;
-    while (!section) {
-      const randomIndex = Math.floor(Math.random() * grid.length);
-      if (!occupiedSections.includes(randomIndex)) {
-        occupiedSections.push(randomIndex);
-        section = grid[randomIndex];
-      }
-    }
-    return section;
-  };
-
-  // Effect to reset occupied sections when dice are re-rolled
-  useEffect(() => {
-    occupiedSections = [];
-  }, [dices]);
-
-  // Render method to display the game board, dice, and roll button
-  return (
-    <div className="gameboard" style={{ backgroundImage: `url(${boardBackground})` }}>
-      <div className="dice-container">
-        {dices.map((diceValue, idx) => {
-          const position = getSectionForDice();
-          position.x += Math.floor(Math.random() * 0) - 5;
-          position.y += Math.floor(Math.random() * -30) - 5;
-          const rotation = getRandomRotation();
-
-          return (
-            <div
-              key={idx}
-              className={`dice dice${diceValue} ${held[idx] ? 'held' : ''}`}
-              onClick={() => onToggleHold(idx)}
-              style={{
+function Dice({ value, isHeld, toggleHold, diceImages, position, rotation }) {
+    return (
+        <div
+            className={`dice dice${value} ${isHeld ? 'held' : ''}`}
+            onClick={toggleHold}
+            style={{
                 transform: `translate(${position.x}%, ${position.y}%) rotate(${rotation}deg)`,
-                cursor: 'pointer'
-              }}
-            >
-              <img src={diceImages[diceValue - 1]} alt={`Dice showing ${diceValue}`} />
-            </div>
-          );
-        })}
-      </div>
-      <button className="roll-button" onClick={onRollDice}>
-        Roll Dice
-      </button>
-    </div>
-  );
+                cursor: 'pointer',
+                position: 'absolute',
+            }}
+        >
+            <img src={diceImages[value - 1]} alt={`Dice showing ${value}`} />
+        </div>
+    );
 }
 
+function Gameboard({ dices, held, onToggleHold, onRollDice }) {
+  const diceImages = [dice1, dice2, dice3, dice4, dice5, dice6];
+  const [positions, setPositions] = useState(Array(dices.length).fill().map(() => ({ x: 0, y: 0 })));
+  const [rotations, setRotations] = useState(Array(dices.length).fill(0));
+
+    useEffect(() => {
+      setRotations(rotations.map((rotation, idx) => (!held[idx] ? Math.floor(Math.random() * 360) : rotation)));
+      setPositions(positions.map((position, idx) => (!held[idx] ? getRandomPosition(positions) : position)));
+  }, [dices]);
+
+    function getRandomPosition(existingPositions) {
+        let newPosition;
+        let tries = 0;
+
+        do {
+            newPosition = {
+                x: Math.random() * 400,
+                y: Math.random() * 460
+            };
+
+            tries++;
+
+            if (tries > 50) {
+                break;
+            }
+        } while (isOverlapping(newPosition, existingPositions))
+
+        return newPosition;
+    }
+
+    function isOverlapping(position, existingPositions) {
+        return existingPositions.some(existing =>
+            Math.abs(existing.x - position.x) < 15 &&
+            Math.abs(existing.y - position.y) < 15
+        );
+    }
+
+    return (
+      <div id="yahtzeeLogo" className="gameboard" style={{ backgroundImage: `url(${boardBackground})`, position: 'relative' }}>
+          <div className="dice-container">
+              {dices.map((diceValue, idx) => (
+                  <Dice
+                      key={idx}
+                      value={diceValue}
+                      isHeld={held[idx]}
+                      toggleHold={() => onToggleHold(idx)}
+                      diceImages={diceImages}
+                      position={positions[idx]}
+                      rotation={rotations[idx]}
+                  />
+              ))}
+          </div>
+          <button className="roll-button" onClick={onRollDice}>
+              Roll Dice
+          </button>
+      </div>
+  );
+}
 export default Gameboard;
