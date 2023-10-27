@@ -3,17 +3,21 @@ import PropTypes from 'prop-types';
 
 
 function Scoreboard({ scores, availableCategories, onSelectCategory }) {
-  const renderCategoryButtons = (section) => {
-    return Object.keys(scores[section]).map((category) => (
-      <div key={category} className="score-item">
-        <span className="score-label">{category}:</span>
-        <span className="score-value">{scores[section][category] !== null ? scores[section][category] : '-'}</span>
-        {availableCategories.includes(category) && (
-          <button onClick={() => onSelectCategory(category)}>Save</button>
-        )}
-      </div>
-    ));
-  };
+    const renderCategoryButtons = (section) => {
+      return Object.keys(scores[section]).map((category) => (
+        <div key={category} className="score-item">
+          <div className="text-content">
+            <span className="score-label">{category}:</span>
+            <span className="score-value">
+              {scores[section][category] !== null ? scores[section][category] : '-'}
+            </span>
+          </div>
+          {availableCategories.includes(category) && (
+            <button onClick={() => onSelectCategory(category)}>Save</button>
+          )}
+        </div>
+      ));
+    };
 
   return (
     <div className="scoreboard">

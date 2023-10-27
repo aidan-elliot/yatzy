@@ -81,6 +81,7 @@
 .score-item {
   display: flex;
   justify-content: space-between;
+  align-items: center; /* Ensure vertical alignment */
   padding: 10px;
   border-bottom: 1px solid white;
 }
@@ -89,8 +90,23 @@
   font-weight: bold;
 }
 
+.score-item button {
+  flex-shrink: 0; /* Prevent the button from shrinking */
+  margin-left: 10px; /* Add space between the button and the score */
+}
+
 .score-value {
   text-align: right;
+  flex-grow: 1; /* Allow this element to take up available space */
+  margin-right: 10px; /* Add some space before the button */
+}
+.text-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+}
+button {
+  flex-shrink: 0; /* Prevent the button from shrinking */
 }
 
 .gameboard {
