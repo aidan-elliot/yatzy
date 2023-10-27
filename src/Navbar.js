@@ -1,17 +1,33 @@
 import React from 'react';
-import Logo from './Assets/Logo white.png'
+import Logo from './Assets/Logo white.png';
 
-function Navbar() {
-    return (
-        <div className="navbar">
-            {/* Logo at the top */}
-            <img src={Logo} alt="Logo" className="navbar-logo" />
-            {/* Buttons */}
-            <button className="navbar-btn">Button 1</button>
-            <button className="navbar-btn">Button 2</button>
-            <button className="navbar-btn">Button 3</button>
-        </div>
-    );
+function Navbar({ finalScore }) {
+  const renderButtons = () => {
+    if (finalScore !== null) {
+      // Display the final score when the game is over
+      return <button className="navbar-btn">{finalScore}</button>;
+    } else {
+      // Display ten buttons for scoring during gameplay
+      const buttons = [];
+      for (let i = 1; i <= 10; i++) {
+        buttons.push(
+          <button key={`Button-${i}`} className="navbar-btn">
+           
+          </button>
+        );
+      }
+      return buttons;
+    }
+  };
+
+  return (
+    <div className="navbar">
+      {/* Logo at the top */}
+      <img src={Logo} alt="Logo" className="navbar-logo" />
+      {/* Buttons */}
+      {renderButtons()}
+    </div>
+  );
 }
 
 export default Navbar;
