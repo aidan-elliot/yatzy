@@ -1,40 +1,40 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-// Defining Scoreboard functional component, receiving scores as props
-function Scoreboard({ scores }) {
-    // Render method for Scoreboard
-    return (
-        // Main container for the scoreboard
-        <div className="scoreboard">
-            {/* Section for displaying upper scores */}
-            <div className="upper-section">
-                <h2>Upper Section</h2>
-                {/* Mapping through each score in the upper section and displaying it */}
-                {Object.keys(scores.upper).map(key => (
-                    <div key={key} className="score-item">
-                        {/* Displaying the name of the score */}
-                        <span className="score-label">{key}:</span>
-                        {/* Displaying the value of the score, showing '-' if score is null */}
-                        <span className="score-value">{scores.upper[key] || '-'}</span>
-                    </div>
-                ))}
-            </div>
-            {/* Section for displaying lower scores */}
-            <div className="lower-section">
-                <h2>Lower Section</h2>
-                {/* Mapping through each score in the lower section and displaying it */}
-                {Object.keys(scores.lower).map(key => (
-                    <div key={key} className="score-item">
-                        {/* Displaying the name of the score */}
-                        <span className="score-label">{key}:</span>
-                        {/* Displaying the value of the score, showing '-' if score is null */}
-                        <span className="score-value">{scores.lower[key] || '-'}</span>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+
+function Scoreboard({ scores, availableCategories, onSelectCategory }) {
+  const renderCategoryButtons = (section) => {
+    return Object.keys(scores[section]).map((category) => (
+      <div key={category} className="score-item">
+        <span className="score-label">{category}:</span>
+        <span className="score-value">{scores[section][category] !== null ? scores[section][category] : '-'}</span>
+        {availableCategories.includes(category) && (
+          <button onClick={() => onSelectCategory(category)}>Save</button>
+        )}
+      </div>
+    ));
+  };
+
+  return (
+    <div className="scoreboard">
+      <div className="upper-section">
+        <h2>Upper Section</h2>
+        {renderCategoryButtons('upper')}
+      </div>
+      <div className="lower-section">
+        <h2>Lower Section</h2>
+        {renderCategoryButtons('lower')}
+      </div>
+    </div>
+  );
 }
-
-// Exporting Scoreboard component as the default export
+Scoreboard.propTypes = {
+    scores: PropTypes.shape({
+      upper: PropTypes.objectOf(PropTypes.number, PropTypes.null),
+      lower: PropTypes.objectOf(PropTypes.number, PropTypes.null),
+    }).isRequired,
+  };
+  
+  
 export default Scoreboard;
+
