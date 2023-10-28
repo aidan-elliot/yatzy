@@ -5,6 +5,7 @@ CST3106
 
 ## Description
 This project is a web-based implementation of the classic dice game Yahtzee, built using React. Players can roll dice, hold onto specific dice between rolls, and choose scoring categories to accumulate points. The game continues until all scoring categories have been used, at which point the player’s final score is calculated and displayed.
+![Yahtzee_Mockup_XD](https://github.com/aidan-elliot/yatzy/assets/81194636/9f3610cf-4594-4a22-87cd-1ce4d2ee033b)
 
 ## Table of Contents
 - [Installation](#installation)
