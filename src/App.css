@@ -61,7 +61,7 @@
   color: white;
   border-radius: 5px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  width: 300px;
+  width: 30vw;
   max-height: 80vh;      
   overflow-y: auto;    
 }
@@ -81,7 +81,7 @@
 .score-item {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Ensure vertical alignment */
+  align-items: center;
   padding: 10px;
   border-bottom: 1px solid white;
 }
@@ -91,22 +91,24 @@
 }
 
 .score-item button {
-  flex-shrink: 0; /* Prevent the button from shrinking */
-  margin-left: 10px; /* Add space between the button and the score */
+  flex-shrink: 0;
+  margin-left: 10px;
 }
 
 .score-value {
   text-align: right;
-  flex-grow: 1; /* Allow this element to take up available space */
-  margin-right: 10px; /* Add some space before the button */
+  flex-grow: 1;
+  margin-right: 10px;
 }
+
 .text-content {
   flex-grow: 1;
   display: flex;
   justify-content: space-between;
 }
+
 button {
-  flex-shrink: 0; /* Prevent the button from shrinking */
+  flex-shrink: 0;
 }
 
 .gameboard {
@@ -134,9 +136,8 @@ button {
   height: 80%;
   margin-left: 0;
   margin-right: auto;
-  position: relative; /* Ensures that the absolutely positioned dice are relative to this container */
+  position: relative;
 }
-
 
 .dice {
   transition: transform 0.2s ease;
