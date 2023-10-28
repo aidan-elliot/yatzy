@@ -4,6 +4,8 @@ import './App.css';
 import '@fontsource/inter';
 import Navbar from './Navbar';
 import Gameboard from './Gameboard';
+import GameOverBanner from './GameOverBanner';
+
 
 function App() {
     // Function to generate an array of 5 random dice values
@@ -86,7 +88,7 @@ function App() {
   };
   // Function to roll the dice
   const rollDice = () => {
-    if (rolls < 3) {
+    if (rolls < 2) {
       const newDices = dices.map((dice, idx) =>
         held[idx] ? dice : 1 + Math.floor(Math.random() * 6)
       );
@@ -333,6 +335,7 @@ const updateTotals = () => {
           rolls={rolls}
           isNewGame={isNewGame} // Pass isNewGame as a prop to Gameboard
         />
+        {gameOver && <GameOverBanner finalScore={finalScores.reduce((a, b) => a + b, 0)} />}
       </div>
     </div>
   );

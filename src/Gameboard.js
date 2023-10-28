@@ -24,7 +24,14 @@ function Dice({ value, isHeld, toggleHold, diceImages, position, rotation }) {
         </div>
     );
 }
-
+function GameOverBanner({ finalScore }) {
+    return (
+      <div className="game-over-banner">
+        <h1>Congratulations!</h1>
+        <p>Your final score is: {finalScore}</p>
+      </div>
+    );
+  }
 
 // Functional component to represent the game board
 function Gameboard({ dices, held, onToggleHold, onRollDice }) {
