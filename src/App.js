@@ -86,16 +86,28 @@ function App() {
       setHeld(newHeld);
     }
   };
-  // Function to roll the dice
+
+  //Lab 7 work below
+  // Function to roll the dice and fetch values from server
   const rollDice = () => {
     if (rolls < 2) {
-      const newDices = dices.map((dice, idx) =>
-        held[idx] ? dice : 1 + Math.floor(Math.random() * 6)
-      );
-      setDices(newDices);
-      setRolls(rolls + 1);
+      // Fetch the new dice values from the server
+      fetch('http://localhost:3000/roll-dice')
+        .then(response => response.json())
+        .then(data => {
+          const newDices = dices.map((dice, idx) =>
+            held[idx] ? dice : data.dices[idx]
+          );
+          // Updates state with the new dice and increment the roll count
+          setDices(newDices);
+          setRolls(rolls + 1);
+        })
+        .catch(error => {
+          console.error('Error fetching new dice values:', error);
+        });
     }
   };
+  //End of Lab7 work
 
   // Function to handle category selection
   const handleCategorySelect = (category) => {
