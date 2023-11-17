@@ -345,7 +345,7 @@ const updateTotals = () => {
           onToggleHold={toggleHold}
           onRollDice={rollDice}
           rolls={rolls}
-          isNewGame={isNewGame} // Pass isNewGame as a prop to Gameboard
+          isNewGame={isNewGame}
         />
         {gameOver && <GameOverBanner finalScore={finalScores.reduce((a, b) => a + b, 0)} />}
       </div>

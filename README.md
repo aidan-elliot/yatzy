@@ -29,9 +29,14 @@ To get started with the Yahtzee game, follow these steps:
    ```
    npm install
    npm install @fontsource/inter
+   npm install concurrently --save-dev
+   ```
+3. **To start both the Express server and the React application**: 
+   ```
+   npm run dev
    ```
 
-3. **Start the Development Server**: 
+3. **To start ONLY the Development Server**: 
    ```
    npm start
    ```
