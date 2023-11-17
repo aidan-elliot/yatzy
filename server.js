@@ -8,47 +8,44 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(cors());
 
-const initialGameState = {
-  dices: Array.from({
-    length: 5
-  }, () => 1 + Math.floor(Math.random() * 6)),
-  held: [false, false, false, false, false],
-  rolls: 0,
-  scores: {
-    upper: {
-      Ones: null,
-      Twos: null,
-      Threes: null,
-      Fours: null,
-      Fives: null,
-      Sixes: null,
-      Total: null,
-      Bonus: null
-    },
-    lower: {
-      ThreeOfAKind: null,
-      FourOfAKind: null,
-      FullHouse: null,
-      SmallStraight: null,
-      LargeStraight: null,
-      Yahtzee: null,
-      Chance: null,
-      YahtzeeBonus: null,
-      TotalLower: null,
-      GrandTotal: null
-    }
-  },
-  gameOver: false,
-  availableCategories: [],
-  finalScores: 0
-};
-
-let gameState = {
-  ...initialGameState
-};
-
 function calculateAvailableCategories(scores) {
   const availableCategories = [];
+
+  const initialGameState = {
+    dices: Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)),
+    held: Array(5).fill(false),
+    rolls: 0,
+    scores: {
+        upper: {
+            Ones: null,
+            Twos: null,
+            Threes: null,
+            Fours: null,
+            Fives: null,
+            Sixes: null,
+            Total: null,
+            Bonus: null
+        },
+        lower: {
+            ThreeOfAKind: null,
+            FourOfAKind: null,
+            FullHouse: null,
+            SmallStraight: null,
+            LargeStraight: null,
+            Yahtzee: null,
+            Chance: null,
+            YahtzeeBonus: null,
+            TotalLower: null,
+            GrandTotal: null
+        }
+    },
+    gameOver: false,
+    availableCategories: [],
+    finalScores: 0
+};
+
+let gameState = { ...initialGameState };
+
 
   // Check upper section categories
   for (const category in scores.upper) {
@@ -91,19 +88,6 @@ app.get('/game-state', (req, res) => {
   res.json(gameState);
 });
 
-app.get('/available-categories', (req, res) => {
-  res.json({
-    availableCategories: calculateAvailableCategories(gameState.scores)
-  });
-});
-
-// Endpoint to get final scores
-app.get('/final-scores', (req, res) => {
-  res.json({
-    finalScores: calculateFinalScores(gameState.scores)
-  });
-});
-
 // Endpoint for rolling dice
 app.get('/roll-dice', (req, res) => {
   if (gameState.rolls < 3) {
@@ -111,8 +95,15 @@ app.get('/roll-dice', (req, res) => {
       gameState.held[idx] ? dice : 1 + Math.floor(Math.random() * 6)
     );
     gameState.rolls++;
+    res.json(gameState);
+  } else {
+    res.status(400).json({ message: "No more rolls left" });
   }
-  res.json(gameState);
+});
+
+app.post('/reset-game', (req, res) => {
+  gameState = { ...initialGameState };
+  res.json({ message: "Game reset", gameState });
 });
 
 // Endpoint for calculating scores
@@ -129,16 +120,39 @@ app.post('/calculate-scores', (req, res) => {
     score = calculateLowerSectionScore(category, gameState.dices);
     gameState.scores.lower[category] = score;
   }
-
+  
+  gameState.rolls = 0;
+  gameState.held.fill(false);
   // Update game state here if necessary, e.g., reset rolls and held state
   gameState.availableCategories = calculateAvailableCategories(gameState.scores);
   gameState.finalScores = calculateFinalScores(gameState.scores);
 
+  res.json(gameState);
+});
+
+app.post('/reset-turn', (req, res) => {
+  if (gameState.rolls >= 3) { // Only reset if player has rolled three times
+    gameState.rolls = 0;
+    gameState.held.fill(false); // Optionally reset the held state of the dice
+    res.json({ message: "Turn reset", gameState });
+  } else {
+    res.status(400).json({ message: "Cannot reset turn yet" });
+  }
+});
+
+app.get('/available-categories', (req, res) => {
   res.json({
-    score,
-    gameState
+    availableCategories: calculateAvailableCategories(gameState.scores)
   });
 });
+
+// Endpoint to get final scores
+app.get('/final-scores', (req, res) => {
+  res.json({
+    finalScores: calculateFinalScores(gameState.scores)
+  });
+});
+
 
 // Function to calculate the score of a specific upper section category based on the dice rolls
 const calculateUpperSectionScore = (category, dices) => {
@@ -201,26 +215,10 @@ const checkStraight = (sortedDices, length) => {
   return false;
 };
 app.put('/update-held', (req, res) => {
-  const {
-    held
-  } = req.body; // Array indicating which dice are held
-  gameState.held = held;
-  res.json({
-    message: "Held state updated",
-    gameState
-  });
+  gameState.held = req.body.held;
+  res.json({ message: "Held state updated", gameState });
 });
 
-// Endpoint to reset game
-app.post('/reset-game', (req, res) => {
-  gameState = {
-    ...initialGameState
-  };
-  res.json({
-    message: "Game reset",
-    gameState
-  });
-});
 
 // Start the server
 app.listen(PORT, () => {

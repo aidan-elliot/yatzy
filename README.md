@@ -36,7 +36,7 @@ To get started with the Yahtzee game, follow these steps:
    ```
 3. **To start both the Express server and the React application**: 
    ```
-   npm run dev
+   npm run devn
    ```
 
 3. **To start one at a time**: 
