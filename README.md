@@ -29,16 +29,20 @@ To get started with the Yahtzee game, follow these steps:
    ```
    npm install
    npm install @fontsource/inter
+   npm install express
    npm install concurrently --save-dev
+   npm install cors
+
    ```
 3. **To start both the Express server and the React application**: 
    ```
    npm run dev
    ```
 
-3. **To start ONLY the Development Server**: 
+3. **To start one at a time**: 
    ```
    npm start
+   node server.js
    ```
 
 After running these commands, you should be able to access the application at `http://localhost:3000/` in your web browser.
