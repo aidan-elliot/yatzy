@@ -6,6 +6,8 @@ import dice4 from './Assets/dice-six-faces-four.png';
 import dice5 from './Assets/dice-six-faces-five.png';
 import dice6 from './Assets/dice-six-faces-six.png';
 import boardBackground from './Assets/Background logo high res black.png';
+import _ from 'lodash';
+
 
 // Functional component to represent a single dice
 function Dice({ value, isHeld, toggleHold, diceImages, position, rotation }) {
@@ -37,47 +39,33 @@ function GameOverBanner({ finalScore }) {
 function Gameboard({ dices, held, onToggleHold, onRollDice, rolls }) {
   // Array of dice face images
   const diceImages = [dice1, dice2, dice3, dice4, dice5, dice6];
+
+  // Predefined set of non-overlapping positions
+  const predefinedPositions = [
+    { x: 10, y: 12 }, { x: 126, y: 11 }, { x: 251, y: 8 }, { x: 371, y: 8 },
+    { x: 14, y: 235 }, { x: 130, y: 235 }, { x: 253, y: 235 }, { x: 370, y: 235 },
+    { x: 9, y: 460 }, { x: 129, y: 460 }, { x: 240, y: 460 }, { x: 372, y: 460 }
+    
+  ];
+
+  // Shuffle and slice the predefined positions to get random positions for each dice
+  function getRandomPositions() {
+    return _.shuffle(predefinedPositions).slice(0, dices.length);
+  }
+
   // State to manage positions of dice on the board
-  const [positions, setPositions] = useState(Array(dices.length).fill().map(() => ({ x: 0, y: 0 })));
+  const [positions, setPositions] = useState(getRandomPositions());
+
   // State to manage rotations of dice on the board
   const [rotations, setRotations] = useState(Array(dices.length).fill(0));
 
   // Effect to update positions and rotations of dice only when they are rolled
   useEffect(() => {
     if (rolls > 0) {
+      setPositions(getRandomPositions());
       setRotations(rotations.map((rotation, idx) => (!held[idx] ? Math.floor(Math.random() * 360) : rotation)));
-      setPositions(positions.map((position, idx) => (!held[idx] ? getRandomPosition(positions) : position)));
     }
-  }, [dices, rolls, held]);
-
-  // Function to generate a random position for a dice
-  function getRandomPosition(existingPositions) {
-    let newPosition;
-    let tries = 0;
-
-    do {
-      newPosition = {
-        x: Math.random() * 400,
-        y: Math.random() * 460
-      };
-
-      tries++;
-
-      if (tries > 50) {
-        break;
-      }
-    } while (isOverlapping(newPosition, existingPositions))
-
-    return newPosition;
-  }
-
-  // Function to check if a position overlaps with existing positions
-  function isOverlapping(position, existingPositions) {
-    return existingPositions.some(existing =>
-      Math.abs(existing.x - position.x) < 15 &&
-      Math.abs(existing.y - position.y) < 15
-    );
-  }
+  }, [rolls]);
 
   // Render the game board with dice and a roll button
   return (
@@ -101,5 +89,5 @@ function Gameboard({ dices, held, onToggleHold, onRollDice, rolls }) {
     </div>
   );
 }
-// Exporting Gameboard component as the default export of the module
+
 export default Gameboard;

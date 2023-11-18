@@ -34,7 +34,7 @@ function App() {
 
   // Function to toggle holding a die
   const toggleHold = (idx) => {
-    if (gameState && gameState.rolls < 2) {
+    if (gameState && gameState.rolls < 3) {
       const newHeld = [...gameState.held];
       newHeld[idx] = !newHeld[idx];
       fetch('http://localhost:3001/update-held', {
@@ -50,7 +50,7 @@ function App() {
 
   // Function to roll the dice
   const rollDice = () => {
-    if (gameState && gameState.rolls < 2) {
+    if (gameState && gameState.rolls < 3) {
       fetch('http://localhost:3001/roll-dice')
         .then(response => response.json())
         .then(data => setGameState(data)) // Update the entire gameState with the server response
@@ -62,31 +62,61 @@ function App() {
 const handleCategorySelect = async (category) => {
   if (gameState) {
     try {
-      console.log("Sending category for calculation:", category); // Log the category being sent
-      const response = await fetch('http://localhost:3001/calculate-scores', {
+      // Ensure the user has rolled at least once before saving a score
+      if (gameState.rolls === 0) {
+        console.error("Roll the dice before selecting a score!");
+        return;
+      }
+
+      // Send the selected category and dice values to the server
+      const scoreResponse = await fetch('http://localhost:3001/calculate-scores', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category, dices: gameState.dices }),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!scoreResponse.ok) {
+        throw new Error(`HTTP error! status: ${scoreResponse.status}`);
       }
 
-      const data = await response.json();
-      rollDice();
-      if (!data.gameState) {
+      const scoreData = await scoreResponse.json();
+      if (!scoreData.gameState) {
         throw new Error('Invalid response from server');
       }
 
-      console.log("Received new game state:", data.gameState); // Log the response
-      setGameState(_.cloneDeep(data.gameState)); // Deep clone the game state before setting it
+      // Update gameState with the new score
+      setGameState(_.cloneDeep(scoreData.gameState));
+
+      // If it was the last roll of the turn, reset the turn and auto-roll
+      if (gameState.rolls === 3) {
+        const resetResponse = await fetch('http://localhost:3001/reset-turn', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!resetResponse.ok) {
+          throw new Error(`HTTP error on reset! status: ${resetResponse.status}`);
+        }
+
+        const resetData = await resetResponse.json();
+        if (!resetData.gameState) {
+          throw new Error('Invalid response from server on reset');
+        }
+
+        // Update gameState after reset
+        setGameState(_.cloneDeep(resetData.gameState));
+
+        // Auto-roll the dice for the next turn
+        rollDice();
+      }
+
     } catch (error) {
       console.error('Error calculating score:', error.message);
-      // Optionally, display this error on the UI
     }
   }
 };
+
+
 
 
 

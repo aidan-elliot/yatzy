@@ -63,7 +63,7 @@ app.get('/game-state', (req, res) => {
 
 // Endpoint for rolling dice
 app.get('/roll-dice', (req, res) => {
-  if (gameState.rolls < 2) {
+  if (gameState.rolls < 3) {
     gameState.dices = gameState.dices.map((dice, idx) =>
       gameState.held[idx] ? dice : 1 + Math.floor(Math.random() * 6)
     );
