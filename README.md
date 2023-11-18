@@ -33,7 +33,7 @@ Prebuild Mock-up
 - [Server Design](#server-side-operations)
   
 
-## Installation #installation
+## Installation
 
 To get started with the Yahtzee game, follow these steps:
 
@@ -117,7 +117,7 @@ To play the game, follow the on-screen instructions:
 
   
 
-## Game Rules #game-rules
+## Game Rules
 
 Yahtzee is played with five dice and a scorecard that has two sections: the upper section and the lower section.
 
@@ -133,7 +133,7 @@ The goal is to accumulate the highest score possible by rolling certain combinat
 
   
 
-## Code Design #code-design
+## Code Design
 
 The Yahtzee game is built using React, employing various React features such as functional components, hooks, and context.
 
@@ -145,7 +145,7 @@ The Yahtzee game is built using React, employing various React features such as 
 
   
 
-## Server-Side Operations #server-side-operations
+## Server-Side Operations
 
 The Yahtzee game leverages a server-side Express application to manage the game state and perform operations like rolling dice and calculating scores.
 
