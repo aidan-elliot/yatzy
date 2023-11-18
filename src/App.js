@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Scoreboard from './Scoreboard';
 import './App.css';
 import '@fontsource/inter';
@@ -8,6 +8,8 @@ import GameOverBanner from './GameOverBanner';
 
 function App() {
   const [gameState, setGameState] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
 
   const fetchGameState = async () => {
     try {
@@ -15,12 +17,16 @@ function App() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       setGameState(data);
+      setIsLoading(false); // End loading only after the initial fetch
+      setFetchError(null);
     } catch (error) {
       console.error('Error fetching game state:', error.message);
+      setFetchError(error.message);
+      setIsLoading(false); // Ensure loading is ended even in case of error
     }
   };
 
-  // Use effect to fetch game state on component mount
+  // Fetch game state on component mount only
   useEffect(() => {
     fetchGameState();
   }, []);
@@ -51,22 +57,44 @@ function App() {
     }
   };
 
-  // Function to handle category selection
-  const handleCategorySelect = (category) => {
-    if (gameState) {
-      fetch('http://localhost:3001/calculate-scores', {
+// Function to handle category selection and score update
+const handleCategorySelect = async (category) => {
+  if (gameState) {
+    try {
+      console.log("Sending category for calculation:", category); // Log the category being sent
+      const response = await fetch('http://localhost:3001/calculate-scores', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category, dices: gameState.dices }),
-      })
-        .then(response => response.json())
-        .then(data => setGameState(data.gameState)) // Update the entire gameState
-        .catch(error => console.error('Error calculating score:', error));
-    }
-  };
+      });
 
-  if (!gameState) {
-    return <div>Loading...</div>; // Shows a loading state or a spinner
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.gameState) {
+        throw new Error('Invalid response from server');
+      }
+      
+      setGameState({ ...data.gameState }); // Spread into a new object
+      
+
+      console.log("Received new game state:", data.gameState); // Log the response
+      setGameState(data.gameState); // Update the entire gameState
+    } catch (error) {
+      console.error('Error calculating score:', error.message);
+    }
+  }
+};
+
+
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Loading screen only active during initial fetch
+  }
+  if (fetchError) {
+    return <div>Error loading game: {fetchError}</div>; // Show error message
   }
 
   return (
@@ -85,6 +113,7 @@ function App() {
           onToggleHold={toggleHold}
           onRollDice={rollDice}
           rolls={gameState.rolls}
+
         />
         {gameState.gameOver && (
           <GameOverBanner finalScore={gameState.finalScores} />

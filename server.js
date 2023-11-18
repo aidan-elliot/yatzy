@@ -8,83 +8,56 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(cors());
 
-function calculateAvailableCategories(scores) {
-  const availableCategories = [];
 
-  const initialGameState = {
-    dices: Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)),
-    held: Array(5).fill(false),
-    rolls: 0,
-    scores: {
-        upper: {
-            Ones: null,
-            Twos: null,
-            Threes: null,
-            Fours: null,
-            Fives: null,
-            Sixes: null,
-            Total: null,
-            Bonus: null
-        },
-        lower: {
-            ThreeOfAKind: null,
-            FourOfAKind: null,
-            FullHouse: null,
-            SmallStraight: null,
-            LargeStraight: null,
-            Yahtzee: null,
-            Chance: null,
-            YahtzeeBonus: null,
-            TotalLower: null,
-            GrandTotal: null
-        }
+const initialGameState = {
+  dices: Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)),
+  held: Array(5).fill(false),
+  rolls: 0,
+  scores: {
+    upper: {
+      Ones: null, Twos: null, Threes: null, Fours: null, Fives: null, Sixes: null
     },
-    gameOver: false,
-    availableCategories: [],
-    finalScores: 0
+    lower: {
+      ThreeOfAKind: null, FourOfAKind: null, FullHouse: null,
+      SmallStraight: null, LargeStraight: null, Yahtzee: null, Chance: null
+    }
+  },
+  gameOver: false,
+  availableCategories: [],
+  finalScores: 0
 };
 
 let gameState = { ...initialGameState };
 
-
-  // Check upper section categories
+function calculateAvailableCategories(scores) {
+  const availableCategories = [];
   for (const category in scores.upper) {
-    if (scores.upper[category] === null) {
-      availableCategories.push(category);
-    }
+    if (scores.upper[category] === null) availableCategories.push(category);
   }
-
-  // Check lower section categories
   for (const category in scores.lower) {
-    if (scores.lower[category] === null) {
-      availableCategories.push(category);
-    }
+    if (scores.lower[category] === null) availableCategories.push(category);
   }
-
   return availableCategories;
 }
 
 function calculateFinalScores(scores) {
   let totalScore = 0;
-
-  // Sum up scores in the upper section
   for (const score of Object.values(scores.upper)) {
-    if (score !== null) {
-      totalScore += score;
-    }
+    if (score !== null) totalScore += score;
   }
-
-  // Sum up scores in the lower section
   for (const score of Object.values(scores.lower)) {
-    if (score !== null) {
-      totalScore += score;
-    }
+    if (score !== null) totalScore += score;
   }
-
   return totalScore;
 }
 
+function updateGameState() {
+  gameState.availableCategories = calculateAvailableCategories(gameState.scores);
+  gameState.finalScores = calculateFinalScores(gameState.scores);
+}
+
 app.get('/game-state', (req, res) => {
+  updateGameState(); // Update available categories and final scores before sending the state
   res.json(gameState);
 });
 
@@ -95,50 +68,57 @@ app.get('/roll-dice', (req, res) => {
       gameState.held[idx] ? dice : 1 + Math.floor(Math.random() * 6)
     );
     gameState.rolls++;
+    updateGameState(); // Update game state after rolling the dice
     res.json(gameState);
   } else {
     res.status(400).json({ message: "No more rolls left" });
   }
 });
 
+// Endpoint for calculating scores
+app.post('/calculate-scores', (req, res) => {
+  try {
+    const { category } = req.body;
+    let score = 0;
+
+    if (category in gameState.scores.upper) {
+      score = calculateUpperSectionScore(category, gameState.dices);
+      gameState.scores.upper[category] = score;
+    } else if (category in gameState.scores.lower) {
+      score = calculateLowerSectionScore(category, gameState.dices);
+      gameState.scores.lower[category] = score;
+    } else {
+      // Category does not exist
+      return res.status(400).json({ message: "Invalid category" });
+    }
+
+    gameState.rolls = 0;
+    gameState.held.fill(false);
+    updateGameState(); // Update game state after calculating scores
+    res.json(gameState);
+  } catch (error) {
+    console.error('Error in calculating scores:', error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 app.post('/reset-game', (req, res) => {
   gameState = { ...initialGameState };
   res.json({ message: "Game reset", gameState });
 });
 
-// Endpoint for calculating scores
-app.post('/calculate-scores', (req, res) => {
-  const {
-    category
-  } = req.body;
-  let score = 0;
-
-  if (category in gameState.scores.upper) {
-    score = calculateUpperSectionScore(category, gameState.dices);
-    gameState.scores.upper[category] = score;
-  } else if (category in gameState.scores.lower) {
-    score = calculateLowerSectionScore(category, gameState.dices);
-    gameState.scores.lower[category] = score;
-  }
-  
-  gameState.rolls = 0;
-  gameState.held.fill(false);
-  // Update game state here if necessary, e.g., reset rolls and held state
-  gameState.availableCategories = calculateAvailableCategories(gameState.scores);
-  gameState.finalScores = calculateFinalScores(gameState.scores);
-
-  res.json(gameState);
-});
-
 app.post('/reset-turn', (req, res) => {
-  if (gameState.rolls >= 3) { // Only reset if player has rolled three times
+  if (gameState.rolls >= 3) {
     gameState.rolls = 0;
-    gameState.held.fill(false); // Optionally reset the held state of the dice
+    gameState.held.fill(false);
+    updateGameState(); // Update the game state after resetting the turn
     res.json({ message: "Turn reset", gameState });
   } else {
     res.status(400).json({ message: "Cannot reset turn yet" });
   }
 });
+
 
 app.get('/available-categories', (req, res) => {
   res.json({
@@ -216,6 +196,7 @@ const checkStraight = (sortedDices, length) => {
 };
 app.put('/update-held', (req, res) => {
   gameState.held = req.body.held;
+  updateGameState(); // Update game state after changing held state
   res.json({ message: "Held state updated", gameState });
 });
 
