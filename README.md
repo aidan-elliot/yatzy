@@ -95,7 +95,7 @@ After running these commands, you should be able to access the application at `h
 
   
 
-The server is accessable at 'http://localhost:3001/'
+The server is accessable at `http://localhost:3001/`
 
   
 
