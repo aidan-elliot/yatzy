@@ -5,6 +5,7 @@ import '@fontsource/inter';
 import Navbar from './Navbar';
 import Gameboard from './Gameboard';
 import GameOverBanner from './GameOverBanner';
+import _ from 'lodash';
 
 function App() {
   const [gameState, setGameState] = useState(null);
@@ -33,7 +34,7 @@ function App() {
 
   // Function to toggle holding a die
   const toggleHold = (idx) => {
-    if (gameState && gameState.rolls < 3) {
+    if (gameState && gameState.rolls < 2) {
       const newHeld = [...gameState.held];
       newHeld[idx] = !newHeld[idx];
       fetch('http://localhost:3001/update-held', {
@@ -49,7 +50,7 @@ function App() {
 
   // Function to roll the dice
   const rollDice = () => {
-    if (gameState && gameState.rolls < 3) {
+    if (gameState && gameState.rolls < 2) {
       fetch('http://localhost:3001/roll-dice')
         .then(response => response.json())
         .then(data => setGameState(data)) // Update the entire gameState with the server response
@@ -73,20 +74,20 @@ const handleCategorySelect = async (category) => {
       }
 
       const data = await response.json();
+      rollDice();
       if (!data.gameState) {
         throw new Error('Invalid response from server');
       }
-      
-      setGameState({ ...data.gameState }); // Spread into a new object
-      
 
       console.log("Received new game state:", data.gameState); // Log the response
-      setGameState(data.gameState); // Update the entire gameState
+      setGameState(_.cloneDeep(data.gameState)); // Deep clone the game state before setting it
     } catch (error) {
       console.error('Error calculating score:', error.message);
+      // Optionally, display this error on the UI
     }
   }
 };
+
 
 
 
@@ -104,7 +105,7 @@ const handleCategorySelect = async (category) => {
         <Scoreboard
           scores={gameState.scores}
           availableCategories={gameState.availableCategories}
-          onSelectCategory={handleCategorySelect}
+          onSelectCategory={handleCategorySelect} // Directly pass handleCategorySelect
           dices={gameState.dices}
         />
         <Gameboard
@@ -113,7 +114,6 @@ const handleCategorySelect = async (category) => {
           onToggleHold={toggleHold}
           onRollDice={rollDice}
           rolls={gameState.rolls}
-
         />
         {gameState.gameOver && (
           <GameOverBanner finalScore={gameState.finalScores} />

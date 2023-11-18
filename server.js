@@ -63,7 +63,7 @@ app.get('/game-state', (req, res) => {
 
 // Endpoint for rolling dice
 app.get('/roll-dice', (req, res) => {
-  if (gameState.rolls < 3) {
+  if (gameState.rolls < 2) {
     gameState.dices = gameState.dices.map((dice, idx) =>
       gameState.held[idx] ? dice : 1 + Math.floor(Math.random() * 6)
     );
@@ -88,18 +88,22 @@ app.post('/calculate-scores', (req, res) => {
       score = calculateLowerSectionScore(category, gameState.dices);
       gameState.scores.lower[category] = score;
     } else {
-      // Category does not exist
+      // If the category does not exist in either upper or lower sections
       return res.status(400).json({ message: "Invalid category" });
     }
 
     gameState.rolls = 0;
     gameState.held.fill(false);
     updateGameState(); // Update game state after calculating scores
-    res.json(gameState);
+
+    // Ensure that the response includes the updated gameState
+    res.json({ gameState });
   } catch (error) {
     console.error('Error in calculating scores:', error);
     res.status(500).json({ message: "Internal server error" });
   }
+  console.log("Sending gameState to client:", gameState);
+  res.json({ gameState });
 });
 
 

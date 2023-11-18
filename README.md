@@ -32,7 +32,7 @@ To get started with the Yahtzee game, follow these steps:
    npm install express
    npm install concurrently --save-dev
    npm install cors
-
+   npm install lodash
    ```
 3. **To start both the Express server and the React application**: 
    ```
