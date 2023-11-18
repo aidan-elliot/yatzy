@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function Scoreboard({ scores, availableCategories, onSelectCategory }) {
+function Scoreboard({ scores, availableCategories, onSelectCategory, bonusScore, finalScore }) {
   console.log("Scores prop in Scoreboard:", scores);
   const renderCategoryButtons = (section) => {
     return Object.keys(scores[section]).map((category) => (
@@ -13,7 +13,7 @@ function Scoreboard({ scores, availableCategories, onSelectCategory }) {
           </span>
         </div>
         {availableCategories.includes(category) && (
-          <button onClick={() => onSelectCategory(category)}>Save</button>
+          <button onClick={() => onSelectCategory(category)}>Select</button>
         )}
       </div>
     ));
@@ -28,6 +28,17 @@ function Scoreboard({ scores, availableCategories, onSelectCategory }) {
       <div className="lower-section">
         <h2>Lower Section</h2>
         {renderCategoryButtons('lower')}
+      </div>
+      { }
+      <div className="score-summary">
+        <div className="bonus-score">
+          <span>Bonus Score:</span>
+          <span>{bonusScore}</span>
+        </div>
+        <div className="final-score">
+          <span>Total Score:</span>
+          <span>{finalScore}</span>
+        </div>
       </div>
     </div>
   );

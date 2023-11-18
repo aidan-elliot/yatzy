@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(cors());
 
-
+//Sets initial gameState
 const initialGameState = {
   dices: Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)),
   held: Array(5).fill(false),
@@ -29,6 +29,7 @@ const initialGameState = {
 
 let gameState = { ...initialGameState };
 
+//Determines available scoreboard categories
 function calculateAvailableCategories(scores) {
   const availableCategories = [];
   for (const category in scores.upper) {
@@ -40,13 +41,20 @@ function calculateAvailableCategories(scores) {
   return availableCategories;
 }
 
+//Logic to calculate bonus score
+function calculateBonus(scores) {
+  const upperScoreSum = Object.values(scores.upper).reduce((sum, score) => sum + (score || 0), 0);
+  return upperScoreSum >= 63 ? 35 : 0; // Bonus condition, example for Yahtzee
+}
+
+//Logic to calculate final score
 function calculateFinalScores(scores) {
-  let totalScore = 0;
+  let totalScore = calculateBonus(scores);
   for (const score of Object.values(scores.upper)) {
-    if (score !== null) totalScore += score;
+    totalScore += score || 0;
   }
   for (const score of Object.values(scores.lower)) {
-    if (score !== null) totalScore += score;
+    totalScore += score || 0;
   }
   return totalScore;
 }
@@ -54,6 +62,7 @@ function calculateFinalScores(scores) {
 function updateGameState() {
   gameState.availableCategories = calculateAvailableCategories(gameState.scores);
   gameState.finalScores = calculateFinalScores(gameState.scores);
+  gameState.bonusScore = calculateBonus(gameState.scores); // Adds bonus score to gameState
 }
 
 app.get('/game-state', (req, res) => {
@@ -96,7 +105,7 @@ app.post('/calculate-scores', (req, res) => {
     gameState.held.fill(false);
     updateGameState(); // Update game state after calculating scores
 
-    // Ensure that the response includes the updated gameState
+    // Ensures that the response includes the updated gameState
     res.json({ gameState });
   } catch (error) {
     console.error('Error in calculating scores:', error);
@@ -104,12 +113,6 @@ app.post('/calculate-scores', (req, res) => {
   }
   console.log("Sending gameState to client:", gameState);
   res.json({ gameState });
-});
-
-
-app.post('/reset-game', (req, res) => {
-  gameState = { ...initialGameState };
-  res.json({ message: "Game reset", gameState });
 });
 
 app.post('/reset-turn', (req, res) => {
@@ -122,6 +125,21 @@ app.post('/reset-turn', (req, res) => {
     res.status(400).json({ message: "Cannot reset turn yet" });
   }
 });
+
+//Restores game to initial gameState to start new game
+app.post('/reset-game', (req, res) => {
+  Object.keys(gameState.scores.upper).forEach(key => gameState.scores.upper[key] = null);
+  Object.keys(gameState.scores.lower).forEach(key => gameState.scores.lower[key] = null);
+
+  gameState.dices = Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6));
+  gameState.held = Array(5).fill(false);
+  gameState.rolls = 0;
+  gameState.gameOver = false;
+  updateGameState(); // This will also recalculate available categories and final scores
+
+  res.json({ gameState });
+});
+
 
 
 app.get('/available-categories', (req, res) => {
@@ -188,6 +206,7 @@ const calculateLowerSectionScore = (category, dices) => {
   }
 };
 
+//Checks if the dice are a straight
 const checkStraight = (sortedDices, length) => {
   for (let i = 0; i <= sortedDices.length - length; i++) {
     const slice = sortedDices.slice(i, i + length);

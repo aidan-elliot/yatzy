@@ -6,6 +6,7 @@ CST3106
 ## Description
 This project is a web-based implementation of the classic dice game Yahtzee, built using React. Players can roll dice, hold onto specific dice between rolls, and choose scoring categories to accumulate points. The game continues until all scoring categories have been used, at which point the player’s final score is calculated and displayed.
 
+Prebuild Mock-up
 ![Yahtzee_Mockup_XD](https://github.com/aidan-elliot/yatzy/assets/81194636/9f3610cf-4594-4a22-87cd-1ce4d2ee033b)
 
 ## Table of Contents
@@ -13,7 +14,7 @@ This project is a web-based implementation of the classic dice game Yahtzee, bui
 - [Usage](#usage)
 - [Game Rules](#game-rules)
 - [Code Design](#code-design)
-- [Contributing](#contributing)
+- [Server Design](#Server-Side Operations)
 - [License](#license)
 
 ## Installation
@@ -39,13 +40,15 @@ To get started with the Yahtzee game, follow these steps:
    npm run dev
    ```
 
-3. **To start one at a time**: 
+3. **To start individually**: 
    ```
    npm start
    node server.js
    ```
 
 After running these commands, you should be able to access the application at `http://localhost:3000/` in your web browser.
+
+The server is accessable at 'http://localhost:3001/'
 
 ## Usage
 To play the game, follow the on-screen instructions:
@@ -68,6 +71,22 @@ The goal is to accumulate the highest score possible by rolling certain combinat
 The Yahtzee game is built using React, employing various React features such as functional components, hooks, and context.
 
 - **Components**: The application is divided into reusable components, such as `Scoreboard`, `Gameboard`, `Navbar`, and `GameOverBanner`.
-- **State Management**: The game state, including the current dice, held dice, scores, and available categories, is managed using React's `useState` and `useEffect` hooks.
-- **Event Handling**: User interactions, like rolling dice, holding dice, and choosing scoring categories, are handled through event handlers passed down to child components as props.
 - **Styling**: The game's styling is done using CSS, with class names assigned to different parts of the interface for easy styling and updates.
+
+## Server-Side Operations
+The Yahtzee game leverages a server-side Express application to manage the game state and perform operations like rolling dice and calculating scores.
+
+### Managing GameState
+The server maintains the state of the game, which includes the dice values, the held status of each die, the current scores for all categories, and the number of rolls left in a turn. When a game is in progress, the server responds to requests from the client-side application to update the game state based on user actions.
+
+### Rolling Dice
+When the "Roll Dice" button is clicked, a request is sent to the server to generate new dice values. The server uses a pseudo-random number generator to simulate the rolling of dice, taking into account any dice the player has chosen to hold. The server then updates the game state with the new dice values and decreases the count of rolls left.
+
+### Scoring
+Once the player chooses a scoring category, a POST request is sent to the server with the selected category and the current dice values. The server calculates the score for that category using the rules of Yahtzee and updates the game state. The server also checks if all categories have been scored to determine if the game is over.
+
+### Resets and Turns
+The server provides endpoints to reset the game to its initial state and to reset the turn (rolls and held dice) when necessary. These operations ensure that the game state remains consistent and that the rules of Yahtzee are enforced throughout the game.
+
+By handling these critical operations on the server side, the game ensures fair play and integrity of the game logic, preventing any client-side manipulation of the game state. The server-side model also allows for future enhancements like multiplayer capabilities, where maintaining a centralized game state becomes crucial.
+

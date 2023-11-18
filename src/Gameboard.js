@@ -17,12 +17,12 @@ function Dice({ value, isHeld, toggleHold, diceImages, position, rotation }) {
       className={`dice dice${value} ${isHeld ? 'held' : ''}`}
       onClick={toggleHold} // Toggle hold state of dice when clicked
       style={{
-        transform: `translate(${position.x}%, ${position.y}%) rotate(${rotation}deg)`, // Apply translation and rotation
-        cursor: 'pointer', // Change cursor to pointer to indicate clickability
-        position: 'absolute', // Position absolutely within its parent
+        transform: `translate(${position.x}%, ${position.y}%) rotate(${rotation}deg)`,
+        cursor: 'pointer',
+        position: 'absolute',
       }}
     >
-      <img src={diceImages[value - 1]} alt={`Dice showing ${value}`} /*Display the image of the current dice face*/ />
+      <img src={diceImages[value - 1]} alt={`Dice showing ${value}`} /*Displays the image of the current dice face*/ />
     </div>
   );
 }
@@ -36,16 +36,16 @@ function GameOverBanner({ finalScore }) {
 }
 
 // Functional component to represent the game board
-function Gameboard({ dices, held, onToggleHold, onRollDice, rolls }) {
+function Gameboard({ dices, held, onToggleHold, onRollDice, rolls, onResetGame }) {
   // Array of dice face images
   const diceImages = [dice1, dice2, dice3, dice4, dice5, dice6];
 
-  // Predefined set of non-overlapping positions
+  // Predefined set of dice positions
   const predefinedPositions = [
     { x: 10, y: 12 }, { x: 126, y: 11 }, { x: 251, y: 8 }, { x: 371, y: 8 },
     { x: 14, y: 235 }, { x: 130, y: 235 }, { x: 253, y: 235 }, { x: 370, y: 235 },
     { x: 9, y: 460 }, { x: 129, y: 460 }, { x: 240, y: 460 }, { x: 372, y: 460 }
-    
+
   ];
 
   // Shuffle and slice the predefined positions to get random positions for each dice
@@ -67,7 +67,7 @@ function Gameboard({ dices, held, onToggleHold, onRollDice, rolls }) {
     }
   }, [rolls]);
 
-  // Render the game board with dice and a roll button
+  // Renders the game board with dice and a roll button
   return (
     <div id="yahtzeeLogo" className="gameboard" style={{ backgroundImage: `url(${boardBackground})`, position: 'relative' }}>
       <div className="dice-container">
@@ -83,9 +83,14 @@ function Gameboard({ dices, held, onToggleHold, onRollDice, rolls }) {
           />
         ))}
       </div>
-      <button className="roll-button" onClick={onRollDice}>
-        Roll Dice
-      </button>
+      <div className="button-container">
+        <button className="roll-button" onClick={onRollDice}>
+          Roll Dice
+        </button>
+        <button className="reset-button" onClick={onResetGame}>
+          Reset Game
+        </button>
+      </div>
     </div>
   );
 }

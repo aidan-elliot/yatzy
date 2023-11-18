@@ -93,6 +93,21 @@
 .score-item button {
   flex-shrink: 0;
   margin-left: 10px;
+  align-self: start;
+  padding: 1pt 4pt;
+  margin-right: 10px;
+  border: 2px solid #007e39;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: #333;
+}
+.score-item:hover{
+  background-color: #222224;
+}
+.score-item button:hover {
+  background-color: #007e39;
 }
 
 .score-value {
@@ -109,6 +124,26 @@
 
 button {
   flex-shrink: 0;
+}
+.bonus-score{
+  display: flex;
+  font-weight: bold;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  text-align: right;
+  flex-grow: 1;
+}
+
+.final-score{
+  display: flex;
+  font-weight: bold;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid white;
+  text-align: right;
+  flex-grow: 1;
 }
 
 .gameboard {
@@ -166,9 +201,15 @@ button {
   border-radius: 15px;
 }
 
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
 .roll-button {
   align-self: start;
   padding: 10px 20px;
+  margin-right: 10px;
   border: 2px solid #007e39;
   color: white;
   border-radius: 5px;
@@ -176,6 +217,19 @@ button {
   transition: background-color 0.3s;
   background-color: #333;
 }
+
+.reset-button {
+  align-self: start;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: 2px solid #ccbe00;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: #333;
+}
+
 
 .roll-button:hover {
   background-color: #007e39;
