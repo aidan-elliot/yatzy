@@ -31,6 +31,9 @@ Prebuild Mock-up
 - [Code Design](#code-design)
 
 - [Server Design](#server-side-operations)
+
+- [API Usage](#api-usage)
+
   
 
 ## Installation
@@ -49,9 +52,11 @@ To get started with the Yahtzee game, follow these steps:
 
    ```
 
-  
+2. **Install Node.js**:
 
-2. **Install Dependencies**:
+   You must have Node.js installed for this project
+
+3. **Install Dependencies**:
 
    ```
 
@@ -69,7 +74,7 @@ To get started with the Yahtzee game, follow these steps:
 
    ```
 
-3. **To start both the Express server and the React application**:
+4. **To start both the Express server and the React application**:
 
    ```
 
@@ -79,7 +84,7 @@ To get started with the Yahtzee game, follow these steps:
 
   
 
-3. **To start individually**:
+5. **To start individually**:
 
    ```
 
@@ -176,3 +181,29 @@ The server provides endpoints to reset the game to its initial state and to rese
   
 
 By handling these critical operations on the server side, the game ensures fair play and integrity of the game logic, preventing any client-side manipulation of the game state. The server-side model also allows for future enhancements like multiplayer capabilities, where maintaining a centralized game state becomes crucial.
+
+## API Usage
+
+The Yahtzee game interfaces with a RESTful API server built with Express. The API endpoints provide a way to interact with the game logic, allowing the client-side React application to request game data updates and receive responses. Here are the key API endpoints and their purposes:
+
+### `/game-state` (GET)
+- Retrieves the current state of the game, including dice values, held status, scores, and remaining rolls.
+- This endpoint is used to synchronize the game state on the client side with the server.
+
+### `/roll-dice` (GET)
+- Triggers a roll of the dice on the server.
+- The server responds with updated dice values, taking into account which dice are held.
+- It also decrements the roll count for the current turn.
+
+### `/calculate-scores` (POST)
+- Receives a category selection and the current dice values from the client.
+- The server calculates the score for the selected category based on the received dice values and updates the game state.
+- The updated game state, including the new score, is sent back to the client.
+
+### `/reset-game` (POST)
+- Resets the game to its initial state.
+- This is used when the player wants to start a new game or when the game has ended.
+
+### `/reset-turn` (POST)
+- Resets the current turn, clearing held dice and resetting roll count.
+- This is invoked automatically after the third roll or when the player chooses a scoring category.
